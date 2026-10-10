@@ -1,212 +1,135 @@
-import os
 from pathlib import Path
-
 import os
 
+FORMATS = {
+    1: "JPEG", 2: "PNG", 3: "WEBP", 4: "GIF", 5: "BMP", 6: "TIFF",
+    7: "HEIC", 8: "PDF", 9: "DOCX", 10: "DOC", 11: "TXT", 12: "RTF",
+    13: "ODT", 14: "XLSX", 15: "XLS", 16: "CSV", 17: "ODS", 18: "PPTX",
+    19: "PPT", 20: "ODP", 21: "EPUB", 22: "ZIP", 23: "RAR", 24: "7Z",
+}
 
-def listar_itens(diretorio="."):
+
+def list_items(directory="."):
     try:
-        if not os.path.isdir(diretorio):
-            raise FileNotFoundError(f"Diretório não encontrado: {diretorio}")
+        if not os.path.isdir(directory):
+            raise FileNotFoundError(f"Directory not found: {directory}")
 
-        itens = []
+        items = []
 
-        for nome in os.listdir(diretorio):
-            caminho = os.path.join(diretorio, nome)
+        for name in os.listdir(directory):
+            path = os.path.join(directory, name)
 
-            if os.path.isfile(caminho) or os.path.isdir(caminho):
-                itens.append(caminho)
+            if os.path.isfile(path) or os.path.isdir(path):
+                items.append(path)
 
-        return itens
+        return items
 
     except Exception as e:
-        print(f"Erro ao listar: {e}")
+        print(f"Error while listing: {e}")
         return []
 
 
-if __name__ == "__main__":
-    caminho = "."
+def print_items(items):
+    for i, item in enumerate(items):
+        name = os.path.basename(item)
 
-    itens = listar_itens(caminho)
-
-    if not itens:
-        print("Nenhum arquivo ou pasta encontrado.")
-
-    else:
-        print("Itens encontrados:\n")
-
-        for i, item in enumerate(itens):
-            nome = os.path.basename(item)
-
-            if os.path.isdir(item):
-                print(f"{i}: [PASTA] {nome}")
-            else:
-                print(f"{i}: {nome}")
-
-        try:
-            escolha = int(input("\nQual arquivo/pasta vc quer puxar? "))
-
-            caminho_escolhido = itens[escolha]
-
-            print("\nCaminho escolhido:")
-            print(os.path.abspath(caminho_escolhido))
-
-            # SE FOR UMA PASTA
-            if os.path.isdir(caminho_escolhido):
-
-                arquivos = listar_itens(caminho_escolhido)
-
-                print("\nConteúdo da pasta:\n")
-
-                for i, arquivo in enumerate(arquivos):
-                    nome = os.path.basename(arquivo)
-
-                    if os.path.isdir(arquivo):
-                        print(f"{i}: [PASTA] {nome}")
-                    else:
-                        print(f"{i}: {nome}")
-
-                try:
-                    escolha_arquivo = int(
-                        input("\nQual arquivo/pasta vc quer puxar? ")
-                    )
-
-                    arquivo_escolhido = arquivos[escolha_arquivo]
-
-                    print("\nArquivo escolhido:")
-                    print(os.path.abspath(arquivo_escolhido))
-
-                except ValueError:
-                    print("Digite um número.")
-
-                except IndexError:
-                    print("Esse número não existe.")
-
-        except ValueError:
-            print("Digite um número.")
-
-        except IndexError:
-            print("Esse número não existe.")
-
-def listar_itens(diretorio="."):
-    try:
-        if not os.path.isdir(diretorio):
-            raise FileNotFoundError(f"Diretório não encontrado: {diretorio}")
-
-        itens = []
-
-        for nome in os.listdir(diretorio):
-            caminho = os.path.join(diretorio, nome)
-
-            if os.path.isfile(caminho) or os.path.isdir(caminho):
-                itens.append(caminho)
-
-        return itens
-
-    except Exception as e:
-        print(f"Erro ao listar: {e}")
-        return []
+        if os.path.isdir(item):
+            print(f"{i}: [FOLDER] {name}")
+        else:
+            print(f"{i}: {name}")
 
 
-if __name__ == "__main__":
-    caminho = "."
+def browse(start="."):
+    current = os.path.abspath(start)
 
-    itens = listar_itens(caminho)
+    while True:
+        items = list_items(current)
 
-    if not itens:
-        print("Nenhum arquivo ou pasta encontrado.")
+        print(f"\nCurrent folder: {current}\n")
 
-    else:
-        print("Itens encontrados:\n")
+        if items:
+            print_items(items)
+        else:
+            print("This folder is empty.")
 
-        for i, item in enumerate(itens):
-            nome = os.path.basename(item)
+        answer = input(
+            "\nWhich file/folder do you want to select? (b = back, q = quit) "
+        ).strip().lower()
 
-            if os.path.isdir(item):
-                print(f"{i}: [PASTA] {nome}")
-            else:
-                print(f"{i}: {nome}")
+        if answer == "q":
+            return None
+
+        if answer == "b":
+            current = os.path.dirname(current)
+            continue
 
         try:
-            escolha = int(input("\nQual arquivo/pasta vc quer puxar? "))
+            choice = int(answer)
 
-            caminho_escolhido = itens[escolha]
+            if choice < 0:
+                raise IndexError
 
-            print("\nCaminho escolhido:")
-            print(os.path.abspath(caminho_escolhido))
-
-            # SE FOR UMA PASTA
-            if os.path.isdir(caminho_escolhido):
-
-                arquivos = listar_itens(caminho_escolhido)
-
-                print("\nConteúdo da pasta:\n")
-
-                for i, arquivo in enumerate(arquivos):
-                    nome = os.path.basename(arquivo)
-
-                    if os.path.isdir(arquivo):
-                        print(f"{i}: [PASTA] {nome}")
-                    else:
-                        print(f"{i}: {nome}")
-
-                try:
-                    escolha_arquivo = int(
-                        input("\nQual arquivo/pasta vc quer puxar? ")
-                    )
-
-                    arquivo_escolhido = arquivos[escolha_arquivo]
-
-                    print("\nArquivo escolhido:")
-                    print(os.path.abspath(arquivo_escolhido))
-
-                except ValueError:
-                    print("Digite um número.")
-
-                except IndexError:
-                    print("Esse número não existe.")
+            chosen = items[choice]
 
         except ValueError:
-            print("Digite um número.")
+            print("Enter a number.")
+            continue
 
         except IndexError:
-            print("Esse número não existe.")
-            
-n1 = str(input("What's the path to the file:  "))
-def seach(path):
+            print("That number doesn't exist.")
+            continue
+
+        # IF IT IS A FOLDER, GO INSIDE IT AND REPEAT
+        if os.path.isdir(chosen):
+            current = os.path.abspath(chosen)
+        else:
+            return os.path.abspath(chosen)
+
+
+def ask_format():
+    print("\nWhat's the conversion?\n")
+
+    for number, name in FORMATS.items():
+        print(f"[{number}] {name}")
+
+    while True:
+        raw = input("\nChoose a number: ").strip()
+
+        try:
+            number = int(raw)
+        except ValueError:
+            print("Enter a number.")
+            continue
+
+        if number in FORMATS:
+            return FORMATS[number]
+
+        print("That number doesn't exist.")
+
+
+def search(path):
     try:
-        if not os.path.exists:
-            print("error")
-            return f"{n1} is not found"
-        else:    
-            question = int(input("What's the conversation?" \
-            "[1] JPEG"
-            "[2] PNG"
-            "[3] WEBP"
-            "[4] GIF"
-            "[5] BMP"
-            "[6] TIFF"
-            "[7] HEIC"
-            "[8] PDF"
-            "[9] DOCX"
-            "[10] DOC"
-            "[11] TXT"
-            "[12] RTF"
-            "[13] ODT"
-            "[14] XLSX"
-            "[15] XLS"
-            "[16] CSV"
-            "[17] ODS"
-            "[18] PPTX"
-            "[19] PPT"
-            "[20] ODP"
-            "[21] EPUB"
-            "[22] ZIP"
-            "[23] RAR"
-            "[24] 7Z"
-            ))
+        if not os.path.exists(path):
+            print(f"{path} was not found.")
+            return None
+
+        return ask_format()
+
     except Exception as e:
-        print(f"Erro ao verificar caminho: {e}")
-        return False
-resultado = seach(n1)
-print(resultado)
+        print(f"Error while checking path: {e}")
+        return None
+
+
+if __name__ == "__main__":
+    chosen_file = browse(".")
+
+    if not chosen_file:
+        print("\nNo file chosen.")
+    else:
+        print("\nChosen file:")
+        print(chosen_file)
+
+        target_format = search(chosen_file)
+
+        if target_format:
+            print(f"\nConvert {os.path.basename(chosen_file)} to {target_format}")
