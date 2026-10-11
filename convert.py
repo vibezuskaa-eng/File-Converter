@@ -133,5 +133,10 @@ if __name__ == "__main__":
 
         root, ex = os.path.splitext(os.path.basename(chosen_file))
         if target_format:
-             print(f"\nConvert {os.path.basename(chosen_file)} to {root}.{target_format.lower()}")
-             
+            print(f"\nConvert {os.path.basename(chosen_file)} to {root}.{target_format.lower()}")             
+            try:
+                create_file = open(chosen_file)
+                create_file.write({root + target_format.lower()})
+                create_file.open()
+            except FileExistsError:
+                print("This file just exist")
