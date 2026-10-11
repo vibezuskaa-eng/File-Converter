@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+from PIL import Image
 
 FORMATS = {
     1: "JPEG", 2: "PNG", 3: "WEBP", 4: "GIF", 5: "BMP", 6: "TIFF",
@@ -7,7 +8,6 @@ FORMATS = {
     13: "ODT", 14: "XLSX", 15: "XLS", 16: "CSV", 17: "ODS", 18: "PPTX",
     19: "PPT", 20: "ODP", 21: "EPUB", 22: "ZIP", 23: "RAR", 24: "7Z",
 }
-
 
 def list_items(directory="."):
     try:
@@ -135,8 +135,9 @@ if __name__ == "__main__":
         if target_format:
             print(f"\nConvert {os.path.basename(chosen_file)} to {root}.{target_format.lower()}")             
             try:
-                create_file = open(chosen_file)
-                create_file.write({root + target_format.lower()})
-                create_file.open()
+                is_image = Image.open(chosen_file)
+
+                is_image.save
             except FileExistsError:
-                print("This file just exist")
+                print("This file is not a image")
+                
